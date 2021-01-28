@@ -13,9 +13,11 @@ Topics
 
 Research
 1. Resolution: 1000px²
-Observing other watch faces for download suggests a 1000x1000 pixel display. Initial testing for topics 2-4 assume this to be the case. Further research needed to verify.
 
-2. Tonal range: XX% - YY%
+Observing other watch faces for download suggests a 1000x1000 pixel display. Initial testing for topics 2-4 assume this to be the case. Further research needed to verify. I suspect this value is lower.
+
+2. Tonal range: 2% - 74%
+
 Tonal range compression effectively reduces the display range to some values greater than zero and less than 100 to represent "fully white" and "fully black".
 
 In the context of a bitmap display this would be a single threshold above and below which pixels would either be "on" or "off" usually 50%.
@@ -24,14 +26,41 @@ In the context of a grayscale display incapable of any method of interpolation, 
 
 To find the thresholds, images with bars of varying intensity are placed against a white and black background. These bars are 1% apart so as to accurately find these values and "pin" them to the upper and lower thresholds of a design, ensuring that the maximum detail can be resolved at each end of the spectrum. Complicating this analysis is the E-Ink display's ability to interpolate between it's native values. (more on this later)
 
-This becomes a somewhat subjective measure due to this interpolating feature. It varies based on viewing condition, total intensity, etc. To the best of my ability I have determined that the lowest value that can be effectively displayed without appearing solid black is about XX% and the highest value that can be effectively displayed without appearing solid white is about YY%.
+This becomes a somewhat subjective measure due to this interpolating feature. It varies based on viewing condition, total intensity, etc. To the best of my ability I have determined that the lowest value that can be effectively displayed without appearing solid black is about 74% and the highest value that can be effectively displayed without appearing solid white is about 2%.
 
+3. Tonal fidelity: 3 native values
 
+The E-Ink display in the Fossil Hybrid HR is grayscale in the sense that individual pixels can be somewhere between fully "on" and fully "off" but only at fixed intervals. These are referred to as "native values." To give the appearance of a continuous tone display, the E-Ink display is capable of displaying values between the native values via interpolation through some manner of dithering. (For a given non-native value, pixels of differing native values are placed in proximity to eachother to simulate that desired value.)
 
+This is useful in that the display can now approximate a continuous tone display but is problematic in that these dithered areas can sometimes result in rather ugly distortion in solid areas.
 
+In the case of the E-Ink display, there are three very clear native values. White, Black and one mid-tone value. The intensity values and their corresponding native value are listed in the table below.
 
+<table>
+  <tr>
+    <td>Min</td>
+    <td>Max</td>
+    <td>Value</td>
+  </tr>
+  <tr>
+    <td>0</td>
+    <td>0</td>
+    <td>White</td>
+  </tr>
+  <tr>
+    <td>25</td>
+    <td>60</td>
+    <td>Midtone</td>
+  </tr>
+  <tr>
+    <td>75</td>
+    <td>100</td>
+    <td>Black</td>
+  </tr>
+</table>
 
+4. Gradients
 
-The E-Ink display in the Fossil Hybrid HR is grayscale in the sense that individual pixel elements can be somewhere between fully "on" and fully "off." These are referred to as "native values." In addition, the display is capable of displaying values between the native values via interpolation through some manner of dithering. (For a given non-native value, pixels of differing native values are placed in proximity to eachother to simulate that desired value.)
+Given the ability of the display to produce only 3 colors natively, the software driving the display must determine how best to interpolate between colors. The Fossil HR Hybrid E-Ink display does this via a type of FM screening. The type of frequency modulation used isn't particularly visually pleasing and very often forms visible diagonal lines. A truly smooth transition from white to black is best accomplished by indexing the colors in a grayscale image, using diffusion dither as the screening method. This allows the watch to make each pixel either black, white or midtone without forcing it to engage its dithering routine.
 
-It's helpful to know the aproximate native values of the display so solid colors can be chosen that have no dithering, as the relatively low resolution of the display causes dithered solid areas to look "dirty" which is sometimes undesireable.  created a series of bars of gray values against a background of both black (bottom half) and white (top half) to compare each end of this spectrum. In the context
+I haven't been able to generate a smooth gradient in this way due to the resolution question. The software is re-sampling the image before displaying it and therefore the pixels in the image aren't reproduced 1:1 to the display.
