@@ -53,7 +53,7 @@ In the case of the E-Ink display, there are four very clear native values. White
     <td>25</td>
     <td>49</td>
     <td>Three-Quarter-Tone</td>
-    <td>95, 95, 95/td>
+    <td>95, 95, 95</td>
   </tr>
   <tr>
     <td>50</td>
